@@ -4,7 +4,7 @@ We added MPC-related features into Keystone, providing a 2/2 MPC wallet between 
 
 You can also follow [@Safeheron](https://twitter.com/Safeheron) on Twitter to learn more about MPC wallet.
 
-To build this branch, you need to [compile the MPC algorithem](https://github.com/Safeheron/mpcsnap/blob/master/packages/mpc-adapter/README.md#bundle-for-keystone) and put the `MPC.bundle.js` into [assets/script](./app/src/main/assets/script) folder, and then follow [this](#build).
+To build this branch, you need to [compile the MPC algorithem](https://github.com/Safeheron/mpcsnap/blob/main/packages/mpc-adapter/README.md#bundle-for-keystone) and put the `MPC.bundle.js` into [assets/script](./app/src/main/assets/script) folder, and then follow [this](#build).
 
 ## Contents
 
