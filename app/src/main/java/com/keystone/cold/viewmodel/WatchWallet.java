@@ -19,28 +19,29 @@
 
 package com.keystone.cold.viewmodel;
 
-import static com.keystone.cold.ui.fragment.setting.MainPreferenceFragment.SETTING_CHOOSE_WATCH_WALLET;
-
 import android.content.Context;
 import android.text.TextUtils;
-
 import com.keystone.coinlib.utils.Coins;
 import com.keystone.cold.R;
 import com.keystone.cold.Utilities;
 import com.keystone.cold.config.FeatureFlags;
 import com.keystone.cold.scan.QREncoding;
 
+import static com.keystone.cold.ui.fragment.setting.MainPreferenceFragment.SETTING_CHOOSE_WATCH_WALLET;
+
 public enum WatchWallet {
     KEYSTONE("keystone"),
     POLKADOT_JS("polkadotJs"),
     XRP_TOOLKIT("xrpToolkit"),
     METAMASK("metamask"),
-    SOLANA("solana");
+    SOLANA("solana"),
+    MPC("mpcSnap");
 
     public static final String XRP_TOOLKIT_SIGN_ID = "xrp_toolkit_sign_id";
     public static final String POLKADOT_JS_SIGN_ID = "polkadot_js_sign_id";
     public static final String METAMASK_SIGN_ID = "metamask_sign_id";
     public static final String SOLANA_SIGN_ID = "solana_sign_id";
+    public static final String MOC_SNAP_ID = "moc_snap_id";
 
     private final String walletId;
 
@@ -100,6 +101,7 @@ public enum WatchWallet {
                 return new Coins.Coin[]{Coins.DOT, Coins.KSM};
             case XRP_TOOLKIT:
                 return new Coins.Coin[]{Coins.XRP};
+            case MPC:
             case METAMASK:
                 return new Coins.Coin[]{Coins.ETH};
             case SOLANA:
@@ -128,6 +130,8 @@ public enum WatchWallet {
                 return METAMASK_SIGN_ID;
             case SOLANA:
                 return SOLANA_SIGN_ID;
+            case MPC:
+                return MOC_SNAP_ID;
         }
         return null;
     }

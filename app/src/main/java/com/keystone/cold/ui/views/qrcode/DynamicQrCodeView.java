@@ -140,6 +140,22 @@ public class DynamicQrCodeView extends LinearLayout implements QrCodeHolder {
         });
     }
 
+    public void displayUR(UR ur, int length) {
+        data = ur.toString();
+        AppExecutors.getInstance().networkIO().execute(() -> {
+            try {
+                mCache.restart();
+                URSubscriber.postValue(ur);
+                int maxFragmentLen = (int) (Math.ceil(length / 10.0) + 1);
+                encoder = new UREncoder(ur, Math.min(maxFragmentLen, 300), Math.max(length / 11, 1), 0);
+                handler.removeCallbacks(runnable);
+                handler.post(runnable);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
     public void disableModal() {
         img.setOnClickListener(null);
         findViewById(R.id.hint).setVisibility(View.GONE);

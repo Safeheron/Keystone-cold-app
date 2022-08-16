@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+  <data>
+
+  </data>
+  <ScrollView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent">
+  <LinearLayout
+      android:id="@+id/container"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical"
+      >
+    <Button
+        android:id="@+id/create_mpc_wallet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Create MPC Wallet"
+        />
+
+
+    <Button
+        android:id="@+id/import_mpc_wallet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Import MPC Wallet"
+        />
+
+
+    <Button
+        android:id="@+id/export_mpc_wallet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Export MPC Wallet"
+        />
+
+
+    <Button
+        android:id="@+id/mpc_sing"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="MPC SIGN"
+        />
+
+
+
+
+
+
+
+
+    <Button
+        android:textColor="#03A9F4"
+        android:id="@+id/exportKeyShare"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Preview-Key-Share"/>
+
+
+
+    <TextView
+        android:id="@+id/accounts_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingVertical="10dp"
+        android:text=""
+        android:textColor="@color/white"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/addr_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/address_item"
+        />
+
+
+    <include
+        layout="@layout/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        />
+
+  </LinearLayout>
+</ScrollView>
+</layout>

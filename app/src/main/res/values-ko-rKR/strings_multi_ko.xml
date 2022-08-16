@@ -367,6 +367,7 @@
     <item>Solflare</item>
     <item>Polkadot{.js}</item>
     <item>XRP Toolkit</item>
+    <item>MPCSnap</item>
   </string-array>
   <string-array name="watch_wallet_summury">
     <item>BTC, ETH 등을 포함한 8개의 메인 체인</item>
@@ -374,6 +375,7 @@
     <item>Solana</item>
     <item>DOT、KSM</item>
     <item>XRP</item>
+    <item>MPC Wallet for all EVM Chains</item>
   </string-array>
   <string name="drawer_menu_sync">보기-전용 지갑</string>
   <string name="title_sync">키스톤 모바일 앱 동기화</string>

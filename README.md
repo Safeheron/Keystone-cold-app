@@ -1,13 +1,10 @@
 # Keystone-app
 
-**The Keystone hardware wallet is simply relaunched from the Cobo Vault branding so both the code base and infrastructure are the same. For more info please checkout [here](https://blog.keyst.one/leaving-cobo-to-continue-the-cobo-vault-legacy-29bb2f8f026e)**
+We added MPC-related features into Keystone, providing a 2/2 MPC wallet between MPCSnap and Keystone to manage EVM assets. 🎉🎉🎉
 
+You can also follow [@Safeheron](https://twitter.com/Safeheron) on Twitter to learn more about MPC wallet.
 
-Keystone is an air-gapped, open source hardware wallet that uses completely transparent QR code data transmissions. Visit the [Keystone official website]( https://keyst.one)  to learn more about Keystone.
-
-You can also follow [@Keystone](https://twitter.com/KeystoneWallet) on Twitter.
-
-<div align=center><img src="https://keyst.one/c430c589a841d8b8379c66766e78c95d.png"/></div>
+To build this branch, you need to [compile the MPC algorithem](https://github.com/Safeheron/mpcsnap/blob/master/packages/mpc-adapter/README.md#bundle-for-keystone) and put the `MPC.bundle.js` into [assets/script](./app/src/main/assets/script) folder, and then follow [this](#build).
 
 ## Contents
 
@@ -22,11 +19,11 @@ You can also follow [@Keystone](https://twitter.com/KeystoneWallet) on Twitter.
 
 ## Introduction
 Keystone runs as a standalone application on customized hardware and Android 8.1 Oreo (Go Edition).  This app performs:
-1. Interaction with the user. 
-2. Interaction with the mobile application [Keystone companion app](https://keyst.one/companion-app) via QR code. 
-3. Interaction with the Secure Element (SE) via serial port, open source SE firmware can be found at [keystone-se-firmware](https://github.com/KeystoneHQ/keystone-se-firmware). Transaction data is signed by the Secure Element and the generated signature is sent back to the application. This signature and other necessary messages are displayed as a QR code. You can check the animation on our webpage to see the whole process. Users use their mobile or desktop application to acquire signed transaction data and broadcast it. 
+1. Interaction with the user.
+2. Interaction with the mobile application [Keystone companion app](https://keyst.one/companion-app) via QR code.
+3. Interaction with the Secure Element (SE) via serial port, open source SE firmware can be found at [keystone-se-firmware](https://github.com/KeystoneHQ/keystone-se-firmware). Transaction data is signed by the Secure Element and the generated signature is sent back to the application. This signature and other necessary messages are displayed as a QR code. You can check the animation on our webpage to see the whole process. Users use their mobile or desktop application to acquire signed transaction data and broadcast it.
 
-The hardware wallet application was programmed with Java language. The transaction related work is done by Typescript, for which open source code is available at [crypto-coin-kit](https://github.com/KeystoneHQ/crypto-coin-kit). The J2V8 framework is used as a bridge between Java and Typescript. 
+The hardware wallet application was programmed with Java language. The transaction related work is done by Typescript, for which open source code is available at [crypto-coin-kit](https://github.com/KeystoneHQ/crypto-coin-kit). The J2V8 framework is used as a bridge between Java and Typescript.
 
 
 ## Clone

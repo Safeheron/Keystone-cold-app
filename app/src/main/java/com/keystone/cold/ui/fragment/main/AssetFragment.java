@@ -17,24 +17,9 @@
 
 package com.keystone.cold.ui.fragment.main;
 
-import static androidx.fragment.app.FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT;
-import static com.keystone.cold.Utilities.IS_SETUP_VAULT;
-import static com.keystone.cold.ui.fragment.Constants.KEY_COIN_CODE;
-import static com.keystone.cold.ui.fragment.Constants.KEY_COIN_ID;
-import static com.keystone.cold.ui.fragment.main.NFTConfirmFragment.ETH_NFT;
-import static com.keystone.cold.ui.fragment.main.NFTConfirmFragment.KEY_CHAIN_ID;
-import static com.keystone.cold.ui.fragment.main.NFTConfirmFragment.KEY_COLLECTION_NAME;
-import static com.keystone.cold.ui.fragment.main.NFTConfirmFragment.KEY_CONTRACT_ADDRESS;
-import static com.keystone.cold.ui.fragment.main.NFTConfirmFragment.KEY_CONTRACT_NAME;
-import static com.keystone.cold.ui.fragment.main.NFTConfirmFragment.KEY_MEDIA_DATA;
-import static com.keystone.cold.ui.fragment.main.NFTConfirmFragment.KEY_MINT_ADDRESS;
-import static com.keystone.cold.ui.fragment.main.NFTConfirmFragment.KEY_NAME;
-import static com.keystone.cold.ui.fragment.main.NFTConfirmFragment.KEY_NFT_TYPE;
-import static com.keystone.cold.ui.fragment.main.NFTConfirmFragment.SOL_NFT;
-import static com.keystone.cold.ui.fragment.setup.WebAuthResultFragment.WEB_AUTH_DATA;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -47,7 +32,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
@@ -56,12 +40,13 @@ import androidx.databinding.ObservableField;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.lifecycle.ViewModelProviders;
-
+import androidx.navigation.Navigation;
 import com.allenliu.badgeview.BadgeFactory;
 import com.allenliu.badgeview.BadgeView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.keystone.coinlib.accounts.ETHAccount;
 import com.keystone.coinlib.accounts.SOLAccount;
+import com.keystone.coinlib.coins.MPC.sign.MPCCoSign;
 import com.keystone.coinlib.exception.InvalidETHAccountException;
 import com.keystone.coinlib.exception.InvalidSOLAccountException;
 import com.keystone.coinlib.exception.InvalidTransactionException;
@@ -74,6 +59,10 @@ import com.keystone.cold.databinding.AssetFragmentBinding;
 import com.keystone.cold.databinding.DialogBottomSheetBinding;
 import com.keystone.cold.db.PresetData;
 import com.keystone.cold.db.entity.CoinEntity;
+import com.keystone.cold.mpc.db.MPCDatabase;
+import com.keystone.cold.mpc.db.dao.MPCWalletDao;
+import com.keystone.cold.mpc.db.entity.MPCWalletEntity;
+import com.keystone.cold.mpc.fragment.address.MPCWalletAddressFragment;
 import com.keystone.cold.ui.MainActivity;
 import com.keystone.cold.ui.fragment.BaseFragment;
 import com.keystone.cold.ui.fragment.main.scan.scanner.ScanResult;
@@ -82,6 +71,7 @@ import com.keystone.cold.ui.fragment.main.scan.scanner.ScannerState;
 import com.keystone.cold.ui.fragment.main.scan.scanner.ScannerViewModel;
 import com.keystone.cold.ui.fragment.main.scan.scanner.exceptions.UnExpectedQRException;
 import com.keystone.cold.ui.modal.ProgressModalDialog;
+import com.keystone.cold.ui.views.AuthenticateModal;
 import com.keystone.cold.util.SolMessageValidateUtil;
 import com.keystone.cold.util.ViewUtils;
 import com.keystone.cold.viewmodel.AddAddressViewModel;
@@ -97,18 +87,35 @@ import com.sparrowwallet.hummingbird.registry.EthNFTItem;
 import com.sparrowwallet.hummingbird.registry.EthSignRequest;
 import com.sparrowwallet.hummingbird.registry.solana.SolNFTItem;
 import com.sparrowwallet.hummingbird.registry.solana.SolSignRequest;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.spongycastle.util.encoders.Hex;
-
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.spongycastle.util.encoders.Hex;
+
+import static androidx.fragment.app.FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT;
+import static com.keystone.cold.Utilities.IS_SETUP_VAULT;
+import static com.keystone.cold.ui.fragment.Constants.KEY_COIN_CODE;
+import static com.keystone.cold.ui.fragment.Constants.KEY_COIN_ID;
+import static com.keystone.cold.ui.fragment.main.NFTConfirmFragment.ETH_NFT;
+import static com.keystone.cold.ui.fragment.main.NFTConfirmFragment.KEY_CHAIN_ID;
+import static com.keystone.cold.ui.fragment.main.NFTConfirmFragment.KEY_COLLECTION_NAME;
+import static com.keystone.cold.ui.fragment.main.NFTConfirmFragment.KEY_CONTRACT_ADDRESS;
+import static com.keystone.cold.ui.fragment.main.NFTConfirmFragment.KEY_CONTRACT_NAME;
+import static com.keystone.cold.ui.fragment.main.NFTConfirmFragment.KEY_MEDIA_DATA;
+import static com.keystone.cold.ui.fragment.main.NFTConfirmFragment.KEY_MINT_ADDRESS;
+import static com.keystone.cold.ui.fragment.main.NFTConfirmFragment.KEY_NAME;
+import static com.keystone.cold.ui.fragment.main.NFTConfirmFragment.KEY_NFT_TYPE;
+import static com.keystone.cold.ui.fragment.main.NFTConfirmFragment.SOL_NFT;
+import static com.keystone.cold.ui.fragment.setting.MainPreferenceFragment.SETTING_CHOOSE_WATCH_WALLET;
+import static com.keystone.cold.ui.fragment.setup.SetPasswordFragment.SHOULD_POP_BACK;
+import static com.keystone.cold.ui.fragment.setup.WebAuthResultFragment.WEB_AUTH_DATA;
 
 public class AssetFragment extends BaseFragment<AssetFragmentBinding>
         implements Toolbar.OnMenuItemClickListener, NumberPickerCallback {
@@ -156,7 +163,12 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
             mBinding.customTitle.setVisibility(View.GONE);
             coinId = Coins.SOL.coinId();
             coinCode = Coins.SOL.coinCode();
-        } else {
+        } else if (watchWallet == WatchWallet.MPC) {
+            mBinding.toolbar.setNavigationIcon(R.drawable.menu);
+            mBinding.toolbar.setTitle(watchWallet.getWalletName(mActivity));
+            mBinding.customTitle.setVisibility(View.GONE);
+            initMpcDao();
+        }else {
             Bundle data = requireArguments();
             coinId = data.getString(KEY_COIN_ID);
             coinCode = data.getString(KEY_COIN_CODE);
@@ -164,6 +176,20 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
         }
         updateUI();
     }
+
+    private MPCWalletEntity mpcWallet;
+    private void initMpcDao() {
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override public void run() {
+                Context context = getActivity();
+                MPCDatabase database = MPCDatabase.getInstance(context);
+                MPCWalletDao dao = database.getMPCWalletDao();
+                MPCWalletEntity entities = dao.loadWallet();
+                mpcWallet = entities;
+            }
+        });
+    }
+
 
     private void updateUI() {
         if (watchWallet == WatchWallet.POLKADOT_JS) {
@@ -186,7 +212,7 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
         mBinding.toolbar.setOnMenuItemClickListener(this);
         mBinding.toolbar.setNavigationOnClickListener(v -> {
             if (watchWallet == WatchWallet.XRP_TOOLKIT || watchWallet == WatchWallet.METAMASK ||
-                    watchWallet == WatchWallet.SOLANA) {
+                    watchWallet == WatchWallet.SOLANA || watchWallet == WatchWallet.MPC) {
                 ((MainActivity) mActivity).toggleDrawer(v);
             } else {
                 navigateUp();
@@ -210,6 +236,9 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
             return R.menu.metamask;
         }
         if (watchWallet == WatchWallet.SOLANA) {
+            return R.menu.metamask;
+        }
+        if (watchWallet == WatchWallet.MPC) {
             return R.menu.metamask;
         }
         return (showPublicKey || Coins.isPolkadotFamily(coinCode)) ? R.menu.asset_without_add : R.menu.asset;
@@ -239,16 +268,23 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
         }
         String tabTwo = getString(R.string.tab_transaction_history);
         String[] title = {tabOne, tabTwo};
-        if (fragments == null) {
+        if (watchWallet == WatchWallet.MPC) {
+            title = new String[]{getString(R.string.tab_my_account)};
+            fragments = new Fragment[title.length];
+          fragments[0] = MPCWalletAddressFragment.newInstance();
+        } else {
+          if (fragments == null) {
             fragments = new Fragment[title.length];
             if (showPublicKey) {
-                fragments[0] = PublicKeyFragment.newInstance(coinId);
+              fragments[0] = PublicKeyFragment.newInstance(coinId);
             } else {
-                fragments[0] = AddressFragment.newInstance(coinId, coinCode);
+              fragments[0] = AddressFragment.newInstance(coinId, coinCode);
             }
             fragments[1] = TxListFragment.newInstance(coinId, coinCode);
+          }
         }
 
+        String[] finalTitle = title;
         mBinding.viewpager.setAdapter(new FragmentPagerAdapter(getChildFragmentManager(),
                 BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
             @NonNull
@@ -259,12 +295,12 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
 
             @Override
             public int getCount() {
-                return title.length;
+                return finalTitle.length;
             }
 
             @Override
             public CharSequence getPageTitle(int position) {
-                return title[position];
+                return finalTitle[position];
             }
         });
         mBinding.tab.setupWithViewPager(mBinding.viewpager);
@@ -343,10 +379,16 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
                 handleAddAddress();
                 break;
             case R.id.action_more:
-                showBottomSheetMenu();
+                if (watchWallet == WatchWallet.MPC) {
+                    showMPCBottomSheetMenu();
+                } else {
+                    showBottomSheetMenu();
+                }
                 break;
             case R.id.action_scan:
-                if (watchWallet == WatchWallet.METAMASK || watchWallet == WatchWallet.POLKADOT_JS
+                if (watchWallet == WatchWallet.MPC) {
+                        mpcCosign();
+                } else if (watchWallet == WatchWallet.METAMASK || watchWallet == WatchWallet.POLKADOT_JS
                         || watchWallet == WatchWallet.SOLANA) {
                     scanQrCode();
                 } else {
@@ -357,6 +399,63 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
                 break;
         }
         return true;
+    }
+
+  private void showBottomSheetMenu() {
+    BottomSheetDialog dialog = new BottomSheetDialog(mActivity);
+    DialogBottomSheetBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mActivity),
+        R.layout.dialog_bottom_sheet, null, false);
+    Runnable closeDialog = () -> {
+      if (dialog.isShowing()) {
+        dialog.dismiss();
+      }
+    };
+    addClickAccountProcess(binding.addAddress, closeDialog);
+    addClickSyncProcess(binding.sync, binding.syncText, closeDialog);
+    addCLickChangePathProcess(binding.changePath, closeDialog);
+    addClickTutorialsProcess(binding.tutorials, closeDialog);
+    dialog.setContentView(binding.getRoot());
+    dialog.show();
+  }
+
+  private void mpcCosign() {
+        MPCCoSign ecdsa = MPCCoSign.getInstance();
+        ecdsa.bindKeyShard(mpcWallet.getKeyShard());
+        String pub = mpcWallet.pub1Key;
+        String pri = mpcWallet.pri2Key;
+        ecdsa.setRSA(pri, pub);
+        ScannerState scannerState = new ScannerState() {
+            @Override public void handleScanResult(ScanResult result) {
+                if (result.getType().equals(ScanResultTypes.UR_BYTES)) {
+                    byte[] bytes = (byte[]) result.resolve();
+                    if (bytes != null && bytes.length > 0) {
+                        String res = new String(bytes);
+                        ecdsa.setTransactionDetails(res);
+                        AppExecutors.getInstance().mainThread().execute(new Runnable() {
+                            @Override public void run() {
+                                if (TextUtils.isEmpty(ecdsa.getAddress())) {
+                                    ecdsa.setAddress(mpcWallet.address);
+                                }
+                                Bundle bundle = new Bundle();
+                                bundle.putString("objText",res);
+                                bundle.putString("address",ecdsa.getAddress());
+                                navigate(R.id.scan_to_display_sign,bundle);
+                            }
+                        });
+                        new Thread(ecdsa).start();
+                    }
+                }
+            }
+        };
+        List<ScanResultTypes> desiredResults =
+            new ArrayList<>(Collections.singletonList(ScanResultTypes.UR_BYTES));
+        scannerState.setDesiredResults(desiredResults);
+        ScannerViewModel scannerViewModel =
+            ViewModelProviders.of(mActivity).get(ScannerViewModel.class);
+        scannerViewModel.setState(scannerState);
+        Bundle bundle = new Bundle();
+        bundle.putString("address", mpcWallet.address);
+        navigate(R.id.action_to_mpc_sign, bundle);
     }
 
     private void showBadge(MenuItem menuItem) {
@@ -571,6 +670,7 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
         navigate(R.id.action_to_scanner);
     }
 
+
     private JSONObject tryDecodeAsJson(String hex) {
         try {
             return new JSONObject(new String(Hex.decode(hex)));
@@ -590,7 +690,7 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
         mAddressNumberPicker.show(mActivity.getSupportFragmentManager(), "");
     }
 
-    private void showBottomSheetMenu() {
+    private void showMPCBottomSheetMenu() {
         BottomSheetDialog dialog = new BottomSheetDialog(mActivity);
         DialogBottomSheetBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mActivity),
                 R.layout.dialog_bottom_sheet, null, false);
@@ -599,12 +699,57 @@ public class AssetFragment extends BaseFragment<AssetFragmentBinding>
                 dialog.dismiss();
             }
         };
-        addClickAccountProcess(binding.addAddress, closeDialog);
-        addClickSyncProcess(binding.sync, binding.syncText, closeDialog);
-        addCLickChangePathProcess(binding.changePath, closeDialog);
-        addClickTutorialsProcess(binding.tutorials, closeDialog);
+        binding.addText.setText("Export MPC Wallet");
+        binding.tutorialsText.setText("Delete MPC Wallet");
+        binding.sync.setVisibility(View.GONE);
+        binding.changePath.setVisibility(View.GONE);
+        binding.divider1.setVisibility(View.GONE);
+        binding.divider2.setVisibility(View.GONE);
+        addClickDeleteMPCWallet(binding.tutorials, closeDialog);
+        addClickExportMPCWallet(binding.addAddress, closeDialog);
         dialog.setContentView(binding.getRoot());
         dialog.show();
+    }
+
+    private void addClickExportMPCWallet(View address, Runnable dialog) {
+        address.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            bundle.putInt("type",1);
+            navigate(R.id.action_asset_to_export_mpc_wallet,bundle);
+            dialog.run();
+        });
+    }
+
+    private void addClickDeleteMPCWallet(View view, Runnable additionProcess) {
+        view.setOnClickListener(v -> {
+                AuthenticateModal.show(mActivity,
+                    mActivity.getString(R.string.password_modal_title),
+                    "",
+                    password -> {
+                        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                            @Override public void run() {
+                                Context context = getActivity();
+                                MPCDatabase database = MPCDatabase.getInstance(context);
+                                MPCWalletDao dao = database.getMPCWalletDao();
+                                dao.deleteWallet();
+                                Utilities.isExportMPCWallet(mActivity,false);
+                                additionProcess.run();
+                                Utilities.getPrefs(mActivity).edit().putString(SETTING_CHOOSE_WATCH_WALLET,null).apply();
+                                Intent intent = new Intent(mActivity, MainActivity.class);
+                                mActivity.startActivity(intent);
+                                mActivity.finish();
+                            }
+                        });
+                    },
+                    () -> {
+                        Bundle data = new Bundle();
+                        data.putBoolean(IS_SETUP_VAULT, true);
+                        data.putBoolean(SHOULD_POP_BACK, true);
+                        Navigation.findNavController(mActivity, R.id.nav_host_fragment)
+                            .navigate(R.id.global_action_to_setPasswordFragment, data);
+                    }
+                );
+        });
     }
 
     private void addClickTutorialsProcess(View view, Runnable additionProcess) {

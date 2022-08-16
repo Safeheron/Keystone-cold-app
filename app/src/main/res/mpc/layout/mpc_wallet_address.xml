@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+  <data>
+
+  </data>
+  <LinearLayout
+      android:orientation="vertical"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      >
+  <LinearLayout
+      android:gravity="center_vertical"
+      android:orientation="vertical"
+      android:layout_width="match_parent"
+      android:layout_height="63dp">
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="14dp"
+        android:background="@null"
+        android:clickable="false"
+        android:enabled="false"
+        android:imeOptions="actionDone"
+        android:importantForAutofill="no"
+        android:inputType="text"
+        android:singleLine="true"
+        android:text="Account0"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        tools:ignore="LabelFor"
+        />
+
+    <TextView
+        android:paddingHorizontal="16sp"
+        android:id="@+id/addr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/name"
+        android:ellipsize="middle"
+        android:singleLine="true"
+        android:textSize="12sp"
+        android:textColor="@color/white40"
+        tools:text="0x4f77d6a…52ce9824"
+        android:layout_alignStart="@id/name"
+        android:layout_marginTop="4dp" />
+
+  </LinearLayout>
+    <Space
+        android:layout_weight="1"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"/>
+    <include
+        layout="@layout/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+    <TextView
+        android:visibility="gone"
+        android:textSize="12sp"
+        android:textColor="@color/black"
+        android:id="@+id/back_up_hint"
+        android:gravity="center_vertical"
+        android:background="@color/check_info_color"
+        android:paddingHorizontal="16dp"
+        android:text="Important! MPC Wallet not backed up! Click here to back up."
+        android:layout_width="match_parent"
+        android:layout_height="63dp"/>
+  </LinearLayout>
+</layout>

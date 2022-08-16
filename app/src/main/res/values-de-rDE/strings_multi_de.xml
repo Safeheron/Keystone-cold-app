@@ -28,6 +28,7 @@
     <item>Solflare</item>
     <item>Polkadot{.js}</item>
     <item>XRP Toolkit</item>
+    <item>MPCSnap</item>
   </string-array>
   <string-array name="watch_wallet_summury">
     <item>8 main chains including BTC, ETH, etc</item>
@@ -35,6 +36,7 @@
     <item>Solana</item>
     <item>DOT、KSM</item>
     <item>XRP</item>
+    <item>MPC Wallet for all EVM Chains</item>
   </string-array>
   <string name="app_name">Keystone</string>
   <string name="action_scan_qr_code">Scan QR Code</string>

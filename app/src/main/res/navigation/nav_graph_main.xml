@@ -128,6 +128,7 @@
         <action
             android:id="@+id/action_QRCodeScan_to_result"
             app:destination="@id/webAuthResultFragment" />
+
     </fragment>
 
     <fragment
@@ -496,7 +497,132 @@
             app:launchSingleTop="true"
             app:popUpTo="@id/assetListFragment"
             app:popUpToInclusive="false" />
+
+        <action
+            android:id="@+id/action_to_createMpcWalletGuide"
+            app:destination="@id/CreateMPCWalletGuide"
+            app:popUpTo="@id/assetListFragment"
+            app:popUpToInclusive="false" />
     </fragment>
+
+
+
+    <fragment
+        android:id="@+id/CreateMPCWalletGuide"
+        android:name="com.keystone.cold.mpc.fragment.create.CreateMPCWalletGuide"
+        tools:layout="@layout/mpc_create_wallet_guide">
+
+
+        <action
+            android:id="@+id/action_create_to_import_mpc_wallet"
+            app:destination="@id/ImportMPCWallet"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+
+
+        <action
+            android:id="@+id/action_create_wallet"
+            app:destination="@+id/DisplayQRCode"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"
+            app:popUpTo="@id/CreateMPCWalletGuide"
+            app:popUpToInclusive="true" />
+
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/ImportMPCWallet"
+        android:name="com.keystone.cold.mpc.fragment.imp.ImportAndExportMPCWallet"
+        tools:layout="@layout/mpc_import_wallet" />
+
+
+    <fragment
+        android:id="@+id/DisplayQRCode"
+        android:label="CreateMPcWalletDisplayQRCode"
+        android:name="com.keystone.cold.mpc.fragment.create.DisPlayQrCodeFragment"
+        tools:layout="@layout/display_qr_code">
+        <action
+            android:id="@+id/display_to_scan_qr_code"
+            app:destination="@id/ScannerQRCode"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/ScannerQRCode"
+        android:name="com.keystone.cold.ui.fragment.main.scan.scanner.ScannerFragment"
+        tools:layout="@layout/scanner_fragment">
+        <action
+            android:id="@+id/scan_to_display_qr_code"
+            app:destination="@id/DisplayQRCode"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"
+            app:popUpTo="@+id/ScannerQRCode"
+            app:popUpToInclusive="true" />
+
+        <action
+            android:id="@+id/scan_to_display_sign"
+            app:destination="@id/TransactionConfirm"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"
+            app:popUpTo="@+id/ScannerQRCode"
+            app:popUpToInclusive="true" />
+
+
+        <action
+            android:id="@+id/scan_to_sign_qr_code"
+            app:destination="@id/SignQRCodeDisplay"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"
+            app:popUpTo="@+id/ScannerQRCode"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/TransactionConfirm"
+        android:name="com.keystone.cold.mpc.fragment.sign.MPCTransactionConfirmFragment"
+        tools:layout="@layout/mpc_transaction_confirm">
+        <action
+            android:id="@+id/confirm_to_sign"
+            app:destination="@id/SignQRCodeDisplay"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"
+            app:popUpTo="@+id/TransactionConfirm"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/SignQRCodeDisplay"
+        android:name="com.keystone.cold.mpc.fragment.sign.SignDisplayQRCodeFragment"
+        tools:layout="@layout/mpc_sign_display_qr_code">
+
+        <action
+            android:id="@+id/sign_display_to_scan"
+            app:destination="@id/ScannerQRCode"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+
+    </fragment>
+
 
     <fragment
         android:id="@+id/txnListFragment"
@@ -522,6 +648,14 @@
         android:name="com.keystone.cold.ui.fragment.main.AssetFragment"
         android:label="AssetFragment"
         tools:layout="@layout/asset_fragment">
+        <action
+            android:id="@+id/action_address_to_export_mpc_wallet"
+            app:destination="@+id/ImportMPCWallet"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"
+            />
         <action
             android:id="@+id/action_assetFragment_to_changeDerivePathFragment"
             app:destination="@id/changeDerivePathFragment"
@@ -611,6 +745,21 @@
         <action
             android:id="@+id/action_to_QRCodeScanFragment"
             app:destination="@id/QRCodeScanFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+
+        <action
+            android:id="@+id/action_to_mpc_sign"
+            app:destination="@id/ScannerQRCode"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+        <action
+            android:id="@+id/action_asset_to_export_mpc_wallet"
+            app:destination="@id/ImportMPCWallet"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"

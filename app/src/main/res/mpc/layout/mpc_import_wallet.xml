@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+  <data>
+
+  </data>
+  <LinearLayout
+      android:orientation="vertical"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      >
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:navigationIcon="@drawable/arrow_left"
+        app:popupTheme="@style/AppTheme.PopupOverlay">
+
+      <TextView
+          android:id="@+id/toolbar_title"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center"
+          android:layout_marginEnd="20dp"
+          android:ellipsize="middle"
+          android:singleLine="true"
+          android:text="Import MPC Wallet"
+          android:textColor="@android:color/white"
+          android:textSize="15sp" />
+    </androidx.appcompat.widget.Toolbar>
+
+    <include layout="@layout/divider" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/text1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:padding="16dp"
+            android:text="How to import MPC Wallet:"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+
+
+        <com.keystone.cold.ui.views.SpanedTextView
+            android:id="@+id/text2"
+            android:layout_marginTop="10dp"
+            tools:text="1. Save your existing MPC Wallet Keystore file on a microSD card (FAT32 format).\n2. Insert the microSD card into the Keystone."
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="6dp"
+            android:padding="16sp"
+            android:textColor="@color/white"
+            android:textSize="13sp" />
+
+
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <com.keystone.cold.ui.views.SpanedTextView
+            android:id="@+id/text4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="13sp"
+            android:textColor="@color/white"
+            android:layout_marginBottom="10dp"
+            android:visibility="gone"
+            android:layout_marginHorizontal="16dp"/>
+      </LinearLayout>
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/import_mpc_wallet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="MicroSD Card Not Found!"
+        tools:visibility="visible"
+        android:visibility="gone"
+        android:textColor="@color/text_wrong" />
+
+    <Button
+        android:gravity="center"
+        android:enabled="false"
+        android:id="@+id/create_mpc_wallet"
+        style="@style/AcceptButton"
+        android:layout_width="match_parent"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="20dp"
+        tools:text="Import" />
+
+
+  </LinearLayout>
+</layout>
